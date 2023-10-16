@@ -20,7 +20,7 @@ namespace CounselingService.API.Controllers
             return Ok(counseling.SpecialEvents);
         }
 
-        [HttpGet("{specialEventID}")]
+        [HttpGet("{specialEventID}", Name = "GetSpecialEvent")]
         public ActionResult<SpecialEventsDTO> GetSpecialEvent(int counselingID, int specialEventID)
         {
             //Find Counseling
@@ -40,6 +40,36 @@ namespace CounselingService.API.Controllers
 
             return Ok(specialEvent);
 
+        }
+
+        [HttpPost]
+        public ActionResult<SpecialEventsDTO> CreateSpecialEvent(int counselingID, SpecialEventsForCreationDto specialEventID)
+        {
+            var counseling = CounselingDataStore.Current.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
+            if (counseling == null) 
+            {
+                return NotFound();
+            }
+            //demo - Will refactor later
+            var maxSpecialEventsId = CounselingDataStore.Current.CounselingServices.SelectMany(c => c.SpecialEvents).Max(s => s.Id);
+
+            var finalSpecialEvent = new SpecialEventsDTO()
+            {
+                Id = ++maxSpecialEventsId,
+                Name = specialEventID.Name,
+                Description = specialEventID.Description
+            };
+
+            counseling.SpecialEvents.Add(finalSpecialEvent);
+
+            return CreatedAtRoute("GetSpecialEvent",
+                new
+                {
+                    counselingId = counselingID,
+                    specialEventID = finalSpecialEvent.Id
+                },
+                finalSpecialEvent
+                );
         }
     }
 }
