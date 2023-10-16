@@ -22,7 +22,7 @@ namespace CounselingService.API.Controllers
         public ActionResult GetFile(string fileID)
         {
             //lookup file
-            //demonstration example
+            //demonstration examples
             var pathToFile = "Logo.png";
 
             //validate file existence
