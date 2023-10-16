@@ -1,0 +1,45 @@
+﻿using CounselingService.API.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CounselingService.API.Controllers
+{
+    [Route("api/CounselingServices/{counselingID}/SpecialEvents")]
+    [ApiController]
+    public class SpecialEventsController : ControllerBase
+    {
+        [HttpGet]
+        public ActionResult<IEnumerable<SpecialEventsDTO>> GetSpecialEvents(int counselingID) 
+        {
+            var counseling = CounselingDataStore.Current.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
+
+            if (counseling == null) 
+            {
+                return NotFound();
+            }
+            return Ok(counseling.SpecialEvents);
+        }
+
+        [HttpGet("{specialEventID}")]
+        public ActionResult<SpecialEventsDTO> GetSpecialEvent(int counselingID, int specialEventID)
+        {
+            //Find Counseling
+            var counseling = CounselingDataStore.Current.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
+
+            if (counseling == null)
+            {
+                return NotFound();
+            }
+
+            //Validate Special Event
+            var specialEvent = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
+            if(specialEvent == null) 
+            {
+                return NotFound();
+            }
+
+            return Ok(specialEvent);
+
+        }
+    }
+}
