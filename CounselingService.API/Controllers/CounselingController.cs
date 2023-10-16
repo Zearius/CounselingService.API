@@ -7,10 +7,11 @@ namespace CounselingService.API.Controllers
     [Route("api/CounselingServices")]
     public class CounselingController : ControllerBase
     {
+        //Returns lisst of Counseling Objects, using Ok helper method.
         [HttpGet]
-        public JsonResult GetCounselingServices()
+        public ActionResult<IEnumerable<CounselingDTO>> GetCounselingServices()
         {
-            return new JsonResult(CounselingDataStore.Current.CounselingServices);
+            return Ok(CounselingDataStore.Current.CounselingServices);
         }
 
         [HttpGet("{id}")]
