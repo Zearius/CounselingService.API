@@ -37,7 +37,7 @@ namespace CounselingService.API.Controllers
             {
                 return NotFound();
             }
-
+            
             return Ok(specialEvent);
 
         }
@@ -45,6 +45,7 @@ namespace CounselingService.API.Controllers
         [HttpPost]
         public ActionResult<SpecialEventsDTO> CreateSpecialEvent(int counselingID, SpecialEventsForCreationDto specialEventID)
         {
+
             var counseling = CounselingDataStore.Current.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
             if (counseling == null) 
             {
