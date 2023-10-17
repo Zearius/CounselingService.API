@@ -14,5 +14,32 @@ namespace CounselingService.API.DbContexts
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Counseling>().
+                HasData(
+                new Counseling("Gambelers Anonymous")
+                {
+                    Id = 1,
+                    Description = "Bi-weekly group, designed to support those recovering from Gambling Addiction",
+                    Counselor = "Catherine Forestrad"
+                },
+                new Counseling("Narcotics Anonymous")
+                {
+                    Id = 2,
+                    Description = "Bi-weekly group, designed to support those recovering from Narcotics Addiction.",
+                    Counselor = "Brian Brackett"
+                },
+                new Counseling("Alcholics Anonymous")
+                {
+                    Id = 3,
+                    Description = "Bi-weekly group, designed to support those recovering from Alcohol Addiction.",
+                    Counselor = "Sarah Johnson"
+                });
+
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

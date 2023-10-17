@@ -33,7 +33,7 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 
 builder.Services.AddSingleton<CounselingDataStore>();
 
-builder.Services.AddDbContext<CounselingInfoContext>(DbContextOptions => DbContextOptions.UseSqlServer("Server=localhost;database=CounselingInfo;User Id=sa;Password=test;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"));
+builder.Services.AddDbContext<CounselingInfoContext>(dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:CounselingInfoDBCOnnectionString"]));
 
 var app = builder.Build();
 
