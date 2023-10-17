@@ -1,6 +1,8 @@
 using CounselingService.API;
+using CounselingService.API.DbContexts;
 using CounselingService.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration().
@@ -30,6 +32,8 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 #endif
 
 builder.Services.AddSingleton<CounselingDataStore>();
+
+builder.Services.AddDbContext<CounselingInfoContext>(DbContextOptions => DbContextOptions.UseSqlServer("Server=localhost;database=CounselingInfo;User Id=sa;Password=test;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"));
 
 var app = builder.Build();
 
