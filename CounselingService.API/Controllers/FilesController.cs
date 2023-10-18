@@ -13,9 +13,8 @@ namespace CounselingService.API.Controllers
 
         public FilesController(FileExtensionContentTypeProvider fileExtensionContentTypeProvider)
         {
-            _fileExtensionContentTypeProvider = fileExtensionContentTypeProvider 
-                ?? throw new System.ArgumentNullException(nameof(fileExtensionContentTypeProvider)); 
-
+            _fileExtensionContentTypeProvider = fileExtensionContentTypeProvider
+                ?? throw new System.ArgumentNullException(nameof(fileExtensionContentTypeProvider));
         }
 
         [HttpGet("{fileID}")]
