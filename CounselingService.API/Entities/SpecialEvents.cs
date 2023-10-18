@@ -14,7 +14,7 @@ namespace CounselingService.API.Entities
         public string Name { get; set; }
 
         [MaxLength(200)]
-        public string Dscription { get; set; }
+        public string Description { get; set; }
 
         [ForeignKey("CounselingId")]
         public Counseling? Counseling { get; set; }

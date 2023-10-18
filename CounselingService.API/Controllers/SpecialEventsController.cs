@@ -1,4 +1,6 @@
-﻿using CounselingService.API.Models;
+﻿using AutoMapper;
+using CounselingService.API.Entities;
+using CounselingService.API.Models;
 using CounselingService.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -13,176 +15,162 @@ namespace CounselingService.API.Controllers
     {
         private readonly ILogger<SpecialEventsController> _logger;
         private readonly IMailService _mailService;
-        private readonly CounselingDataStore _counselingDataStore;
+        private readonly ICounselingInfoRepository _counselingInfoRepository;
+        private readonly IMapper _mapper;
 
-        public SpecialEventsController(ILogger<SpecialEventsController> logger, IMailService mailService, CounselingDataStore counselingDataStore)
+        public SpecialEventsController(ILogger<SpecialEventsController> logger, IMailService mailService, ICounselingInfoRepository counselingInfoRepository, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(_mailService));
-            _counselingDataStore = counselingDataStore ?? throw new ArgumentNullException(nameof(_counselingDataStore));
+            _counselingInfoRepository = counselingInfoRepository ?? throw new ArgumentNullException(nameof(_counselingInfoRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<SpecialEventsDTO>> GetSpecialEvents(int counselingID) 
+        public async  Task<ActionResult<IEnumerable<SpecialEventsDTO>>> GetSpecialEvents(int counselingId) 
         {
-            try
+            
+            if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId)) 
             {
-                var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
+                _logger.LogInformation($"Counseling with id {counselingId} was not found.");
+                return NotFound();
+            }
 
-                if (counseling == null)
-                {
-                    _logger.LogInformation($"Counseling Serivce with id {counselingID} wasn't found with accessing services.");
-                    return NotFound();
-                }
-                return Ok(counseling.SpecialEvents);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Exception while getting points of interest for counseling serivces with {counselingID}.", ex);
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
+           var specialEventsForCounseling = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId);
+           return Ok(_mapper.Map<IEnumerable<SpecialEventsDTO>>(specialEventsForCounseling));
         }
 
         [HttpGet("{specialEventID}", Name = "GetSpecialEvent")]
-        public ActionResult<SpecialEventsDTO> GetSpecialEvent(int counselingID, int specialEventID)
+        public async Task<ActionResult<SpecialEventsDTO>> GetSpecialEvent(int counselingId, int specialEventId)
         {
-            //Find Counseling
-            var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
+            if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId))
+            {
+                _logger.LogInformation($"Counseling with id {counselingId} was not found.");
+                return NotFound();
+            }
+            var specialEventsForCounseling = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventId);
 
-            if (counseling == null)
+            if (specialEventsForCounseling == null)
             {
                 return NotFound();
             }
-
-            //Validate Special Event
-            var specialEvent = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
-            if(specialEvent == null) 
-            {
-                return NotFound();
-            }
-            
-            return Ok(specialEvent);
+            return Ok(_mapper.Map<SpecialEventsDTO>(specialEventsForCounseling));
 
         }
 
         [HttpPost]
-        public ActionResult<SpecialEventsDTO> CreateSpecialEvent(int counselingID, SpecialEventsForCreationDto specialEventID)
+        public async Task<ActionResult<SpecialEventsDTO>> CreateSpecialEvent(int counselingId, SpecialEventsForCreationDto specialEvents)
         {
 
-            var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingID);
-            if (counseling == null) 
+            if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId))
             {
                 return NotFound();
             }
-            //demo - Will refactor later
-            var maxSpecialEventsId = _counselingDataStore.CounselingServices.SelectMany(c => c.SpecialEvents).Max(s => s.Id);
 
-            var finalSpecialEvent = new SpecialEventsDTO()
-            {
-                Id = ++maxSpecialEventsId,
-                Name = specialEventID.Name,
-                Description = specialEventID.Description
-            };
+            var finalSpecialEvent = _mapper.Map<Entities.SpecialEvents>(specialEvents);
 
-            counseling.SpecialEvents.Add(finalSpecialEvent);
+            await _counselingInfoRepository.AddSpecialEventForCounselingAsync(counselingId, finalSpecialEvent);
+
+            await _counselingInfoRepository.SaveChangesAsync();
+
+            var createdSpecialEventToReturn = _mapper.Map<Models.SpecialEventsDTO>(finalSpecialEvent);
 
             return CreatedAtRoute("GetSpecialEvent",
                 new
                 {
-                    counselingId = counselingID,
-                    specialEventID = finalSpecialEvent.Id
+                    counselingId = counselingId,
+                    specialEventId = createdSpecialEventToReturn.Id
                 },
-                finalSpecialEvent
-                );
+                createdSpecialEventToReturn);
         }
 
-        //Full update
-        [HttpPut("{specialEventID}")]
-        public ActionResult UpdateSpecialEvent(int counselingId, int specialEventID, SpecialEventForUpdateDto specialEvent) 
-        {
-            //Look for Counseling to update
-            var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingId);
-            if (counseling == null) 
-            { 
-                return NotFound(); 
-            }
+        //    //Full update
+        //    [HttpPut("{specialEventID}")]
+        //    public ActionResult UpdateSpecialEvent(int counselingId, int specialEventID, SpecialEventForUpdateDto specialEvent) 
+        //    {
+        //        //Look for Counseling to update
+        //        var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingId);
+        //        if (counseling == null) 
+        //        { 
+        //            return NotFound(); 
+        //        }
 
-            //Look for special event to update
-            var specialEventFromStore = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
-            if (specialEventFromStore == null)
-            {
-                return NotFound();
-            }
-            specialEventFromStore.Name = specialEvent.Name;
-            specialEventFromStore.Description = specialEvent.Description;
+        //        //Look for special event to update
+        //        var specialEventFromStore = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
+        //        if (specialEventFromStore == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        specialEventFromStore.Name = specialEvent.Name;
+        //        specialEventFromStore.Description = specialEvent.Description;
 
-            return NoContent();
-        }
+        //        return NoContent();
+        //    }
 
-        //Partial Update
-        [HttpPatch("{specialEventID}")]
-        public ActionResult PartiallyUpdateSpecialEvent(int counselingId, int specialEventID, JsonPatchDocument<SpecialEventForUpdateDto> patchDocument)
-        {
-            //Look for Counseling to update
-            var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingId);
-            if (counseling == null)
-            {
-                return NotFound();
-            }
+        //    //Partial Update
+        //    [HttpPatch("{specialEventID}")]
+        //    public ActionResult PartiallyUpdateSpecialEvent(int counselingId, int specialEventID, JsonPatchDocument<SpecialEventForUpdateDto> patchDocument)
+        //    {
+        //        //Look for Counseling to update
+        //        var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingId);
+        //        if (counseling == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-            //Look for special event to update
-            var specialEventFromStore = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
-            if (specialEventFromStore == null)
-            {
-                return NotFound();
-            }
+        //        //Look for special event to update
+        //        var specialEventFromStore = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
+        //        if (specialEventFromStore == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-            var specialEventToPatch =
-                new SpecialEventForUpdateDto()
-                {
-                    Name = specialEventFromStore.Name,
-                    Description = specialEventFromStore.Description
-                };
+        //        var specialEventToPatch =
+        //            new SpecialEventForUpdateDto()
+        //            {
+        //                Name = specialEventFromStore.Name,
+        //                Description = specialEventFromStore.Description
+        //            };
 
-            patchDocument.ApplyTo(specialEventToPatch, ModelState);
+        //        patchDocument.ApplyTo(specialEventToPatch, ModelState);
 
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest(ModelState);
-            }
+        //        if (!ModelState.IsValid) 
+        //        {
+        //            return BadRequest(ModelState);
+        //        }
 
-            if (!TryValidateModel(specialEventToPatch))
-            {
-                return BadRequest(ModelState);
-            }
+        //        if (!TryValidateModel(specialEventToPatch))
+        //        {
+        //            return BadRequest(ModelState);
+        //        }
 
-            specialEventFromStore.Name = specialEventToPatch.Name;
-            specialEventFromStore.Description = specialEventToPatch.Description;
+        //        specialEventFromStore.Name = specialEventToPatch.Name;
+        //        specialEventFromStore.Description = specialEventToPatch.Description;
 
-            return NoContent();
-        }
+        //        return NoContent();
+        //    }
 
-        //Deletion of Resources
-        [HttpDelete("{specialEventID}")]
-        public ActionResult DeleteSpecialEvent(int counselingId, int specialEventID)
-        {
-            //Look for Counseling to update
-            var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingId);
-            if (counseling == null)
-            {
-                return NotFound();
-            }
+        //    //Deletion of Resources
+        //    [HttpDelete("{specialEventID}")]
+        //    public ActionResult DeleteSpecialEvent(int counselingId, int specialEventID)
+        //    {
+        //        //Look for Counseling to update
+        //        var counseling = _counselingDataStore.CounselingServices.FirstOrDefault(c => c.Id == counselingId);
+        //        if (counseling == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-            //Look for special event to update
-            var specialEventFromStore = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
-            if (specialEventFromStore == null)
-            {
-                return NotFound();
-            }
+        //        //Look for special event to update
+        //        var specialEventFromStore = counseling.SpecialEvents.FirstOrDefault(c => c.Id == specialEventID);
+        //        if (specialEventFromStore == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-            counseling.SpecialEvents.Remove(specialEventFromStore);
-            _mailService.Send("Special Event canceled.", $"Special Event {specialEventFromStore.Name} with id {specialEventFromStore.Id} was deleted.");
-            return NoContent();
-        }
+        //        counseling.SpecialEvents.Remove(specialEventFromStore);
+        //        _mailService.Send("Special Event canceled.", $"Special Event {specialEventFromStore.Name} with id {specialEventFromStore.Id} was deleted.");
+        //        return NoContent();
+        //    }
     }
 }

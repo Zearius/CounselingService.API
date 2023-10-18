@@ -1,4 +1,6 @@
-﻿using CounselingService.API.Models;
+﻿using AutoMapper;
+using CounselingService.API.Models;
+using CounselingService.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CounselingService.API.Controllers
@@ -7,32 +9,40 @@ namespace CounselingService.API.Controllers
     [Route("api/CounselingServices")]
     public class CounselingController : ControllerBase
     {
-        private readonly CounselingDataStore _counselingDatastore;
-        public CounselingController(CounselingDataStore counselingDataStore) 
+        private readonly ICounselingInfoRepository _counselingInfoRepository;
+        private readonly IMapper _mapper;
+
+        public CounselingController(ICounselingInfoRepository counselingInfoRepository,IMapper mapper) 
         {
-            _counselingDatastore = counselingDataStore ?? throw new ArgumentNullException(nameof(counselingDataStore));
+            _counselingInfoRepository = counselingInfoRepository ?? throw new ArgumentException(nameof(counselingInfoRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 
         }
         //Returns lisst of Counseling Objects, using Ok helper method.
         [HttpGet]
-        public ActionResult<IEnumerable<CounselingDTO>> GetCounselingServices()
+        public async Task<ActionResult<IEnumerable<CounselingWithoutSpecialEventsDTO>>> GetCounselingServices()
         {
-            return Ok(_counselingDatastore.CounselingServices);
+            var counselingEntites = await _counselingInfoRepository.GetCounselingsAsync();
+
+
+            return Ok(_mapper.Map<IEnumerable<CounselingWithoutSpecialEventsDTO>>(counselingEntites));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CounselingDTO> GetCounselingService(int id) 
+        public async Task<IActionResult> GetCounselingService(int id, bool includeSpecialEvents = false)
         {
-            //Returns city & Validates Response
-            var CounselingToReturn = _counselingDatastore.CounselingServices.FirstOrDefault(c => c.Id == id);
-            
-            //Returns Not Found, if ID does not exist.
-            if (CounselingToReturn == null) 
+            var counseling = await _counselingInfoRepository.GetCounselingAsync(id, includeSpecialEvents);
+            if (counseling == null) 
             {
                 return NotFound();
             }
+            if (includeSpecialEvents)
+            {
+                return Ok(_mapper.Map<CounselingDTO>(counseling));
+            }
+            return Ok(_mapper.Map<CounselingWithoutSpecialEventsDTO>(counseling));
 
-            return Ok(CounselingToReturn);
         }
+
     }
 }

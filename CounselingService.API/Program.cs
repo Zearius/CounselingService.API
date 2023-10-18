@@ -35,6 +35,10 @@ builder.Services.AddSingleton<CounselingDataStore>();
 
 builder.Services.AddDbContext<CounselingInfoContext>(dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:CounselingInfoDBCOnnectionString"]));
 
+builder.Services.AddScoped<ICounselingInfoRepository, CounselingInfoRepository>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

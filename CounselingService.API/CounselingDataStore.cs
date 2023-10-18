@@ -9,8 +9,8 @@ namespace CounselingService.API
 
         //public static CounselingDataStore Current { get; } = new CounselingDataStore();
 
-        public CounselingDataStore() 
-        { 
+        public CounselingDataStore()
+        {
             CounselingServices = new List<CounselingDTO>()
             {
                 new CounselingDTO()
