@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using CounselingService.API.Entities;
 using CounselingService.API.Models;
 using CounselingService.API.Services;
@@ -10,8 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace CounselingService.API.Controllers
 {
-    [Route("api/CounselingServices/{counselingID}/SpecialEvents")]
+    [Route("api/v{version:apiVersion}/CounselingServices/{counselingId}/SpecialEvents")]
     [Authorize(Policy = "MustBeAGamblingCounselor")]
+    [ApiVersion("2.0")]
     [ApiController]
     public class SpecialEventsController : ControllerBase
     {
@@ -37,7 +39,7 @@ namespace CounselingService.API.Controllers
             {
                 return Forbid();
             };
-            
+
             if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId)) 
             {
                 _logger.LogInformation($"Counseling with id {counselingId} was not found.");

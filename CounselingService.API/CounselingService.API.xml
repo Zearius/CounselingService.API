@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CounselingService.API</name>
+    </assembly>
+    <members>
+        <member name="M:CounselingService.API.Controllers.CounselingController.GetCounselingServices(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Returns all Counseling Services.
+            </summary>
+            <param name="name"></param>
+            <param name="searchQuery"></param>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <returns>Action Result</returns>
+            <response code="200">Returns requested Counseling Service</response>
+        </member>
+        <member name="M:CounselingService.API.Controllers.CounselingController.GetCounselingService(System.Int32,System.Boolean)">
+            <summary>
+            Retrieves a Counseling Service by Id.
+            </summary>
+            <param name="id"></param>
+            <param name="includeSpecialEvents">Wether or not to include a Special Event associated with counseling.</param>
+            <returns>IActionResult</returns>
+            <response code="200">Returns requested Counseling Service</response>
+        </member>
+        <member name="T:CounselingService.API.Migrations.CounselingInfoDBInitialMigration">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.CounselingInfoDBInitialMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.CounselingInfoDBInitialMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.CounselingInfoDBInitialMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:CounselingService.API.Migrations.CounselingInfoDBAddSpecialEventDescription">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.CounselingInfoDBAddSpecialEventDescription.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.CounselingInfoDBAddSpecialEventDescription.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.CounselingInfoDBAddSpecialEventDescription.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:CounselingService.API.Migrations.Dataseed">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.Dataseed.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.Dataseed.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.Dataseed.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:CounselingService.API.Migrations.UpdateDatabaseTable">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.UpdateDatabaseTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.UpdateDatabaseTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CounselingService.API.Migrations.UpdateDatabaseTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:CounselingService.API.Models.CounselingDTO">
+            <summary>
+            Counseling DTO containing basic informaiton with a list of special events and number of events
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingDTO.Name">
+            <summary>
+            Name of Counseling Service.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingDTO.Counselor">
+            <summary>
+            Name of Counselor providing service.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingDTO.Description">
+            <summary>
+            Brief Description of Service provided.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingDTO.SpecialEvents">
+            <summary>
+            Collection of Special events.
+            </summary>
+        </member>
+        <member name="T:CounselingService.API.Models.CounselingWithoutSpecialEventsDTO">
+            <summary>
+            A DTO for a Counseling service without a special event.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingWithoutSpecialEventsDTO.Id">
+            <summary>
+            Id of Counseling Service special event is associated it.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingWithoutSpecialEventsDTO.Name">
+            <summary>
+            Name of Counseling Serivce.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingWithoutSpecialEventsDTO.Counselor">
+            <summary>
+            Name of Counselor associated with Counseling service.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.Models.CounselingWithoutSpecialEventsDTO.Description">
+            <summary>
+            Brief description of counseling service.
+            </summary>
+        </member>
+    </members>
+</doc>
