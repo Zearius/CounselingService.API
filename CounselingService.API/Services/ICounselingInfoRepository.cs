@@ -17,5 +17,7 @@ namespace CounselingService.API.Services
         Task AddSpecialEventForCounselingAsync(int counselingId, SpecialEvents specialEvents);
 
         Task<bool> SaveChangesAsync();
+
+        void DeleteSpecialEvents(SpecialEvents specialEvents);
     }
 }

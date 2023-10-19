@@ -56,5 +56,10 @@ namespace CounselingService.API.Services
         {
             return (await _context.SaveChangesAsync() >= 0);
         }
+
+        public void DeleteSpecialEvents(SpecialEvents specialEvents)
+        {
+            _context.SpecialEvents.Remove(specialEvents);
+        }
     }
 }
