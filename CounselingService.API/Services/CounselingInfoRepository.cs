@@ -87,5 +87,10 @@ namespace CounselingService.API.Services
         {
             _context.SpecialEvents.Remove(specialEvents);
         }
+
+        public async Task<bool> CounselingNameMatchesCounselingId(string? counselingName, int counselingId)
+        {
+            return await _context.Counselings.AnyAsync(c => c.Id == counselingId && c.Name == counselingName);
+        }
     }
 }

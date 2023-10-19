@@ -2,6 +2,7 @@
 using CounselingService.API.Entities;
 using CounselingService.API.Models;
 using CounselingService.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace CounselingService.API.Controllers
 {
     [Route("api/CounselingServices/{counselingID}/SpecialEvents")]
+    [Authorize(Policy = "MustBeAGamblingCounselor")]
     [ApiController]
     public class SpecialEventsController : ControllerBase
     {
@@ -29,6 +31,12 @@ namespace CounselingService.API.Controllers
         [HttpGet]
         public async  Task<ActionResult<IEnumerable<SpecialEventsDTO>>> GetSpecialEvents(int counselingId) 
         {
+            var counselingName = User.Claims.FirstOrDefault(c => c.Type == "counseling")?.Value;
+
+            if (!await _counselingInfoRepository.CounselingNameMatchesCounselingId(counselingName, counselingId))
+            {
+                return Forbid();
+            };
             
             if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId)) 
             {
