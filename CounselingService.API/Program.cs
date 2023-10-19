@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Serilog;
+using Microsoft.OpenApi.Extensions;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 Log.Logger = new LoggerConfiguration().
     MinimumLevel.Debug().
@@ -24,7 +27,32 @@ builder.Services.AddControllers(options =>
 }).AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(setupAction =>
+{
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFuillPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+    setupAction.IncludeXmlComments(xmlCommentsFuillPath);
+
+    setupAction.AddSecurityDefinition("CounselingServiceApiBearerAuth", new OpenApiSecurityScheme()
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        Description = "Input a valid token to access this API"
+    });
+    setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "CounselingServiceApiBearerAuth"}
+            }, new List<string>() }
+    });
+});
+
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
 #if DEBUG
@@ -65,6 +93,13 @@ builder.Services.AddAuthorization(options =>
         });
     }
 );
+
+builder.Services.AddApiVersioning( setupAction =>
+{
+    setupAction.AssumeDefaultVersionWhenUnspecified = true;
+    setupAction.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    setupAction.ReportApiVersions = true;
+}).AddMvc();
 
 var app = builder.Build();
 
