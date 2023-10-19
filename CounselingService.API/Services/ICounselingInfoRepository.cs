@@ -21,5 +21,7 @@ namespace CounselingService.API.Services
         Task<bool> SaveChangesAsync();
 
         void DeleteSpecialEvents(SpecialEvents specialEvents);
+
+        Task<bool> CounselingNameMatchesCounselingId(string? counselingName, int counselingId);
     }
 }

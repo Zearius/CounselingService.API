@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using CounselingService.API.Models;
 using CounselingService.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace CounselingService.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/CounselingServices")]
     public class CounselingController : ControllerBase
     {

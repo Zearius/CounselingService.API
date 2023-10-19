@@ -3,6 +3,8 @@ using CounselingService.API.DbContexts;
 using CounselingService.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration().
@@ -39,6 +41,31 @@ builder.Services.AddScoped<ICounselingInfoRepository, CounselingInfoRepository>(
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Authentication:Issuer"],
+            ValidAudience = builder.Configuration["Authentication:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
+        };
+    }
+);
+
+builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("MustBeAGamblingCounselor", policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.RequireClaim("counseling", "gambling");
+
+        });
+    }
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,6 +78,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
