@@ -2,6 +2,7 @@
 using CounselingService.API.Models;
 using CounselingService.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CounselingService.API.Controllers
 {
@@ -11,6 +12,7 @@ namespace CounselingService.API.Controllers
     {
         private readonly ICounselingInfoRepository _counselingInfoRepository;
         private readonly IMapper _mapper;
+        const int maxCounselingPageSize = 20;
 
         public CounselingController(ICounselingInfoRepository counselingInfoRepository,IMapper mapper) 
         {
@@ -20,10 +22,16 @@ namespace CounselingService.API.Controllers
         }
         //Returns lisst of Counseling Objects, using Ok helper method.
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CounselingWithoutSpecialEventsDTO>>> GetCounselingServices()
+        public async Task<ActionResult<IEnumerable<CounselingWithoutSpecialEventsDTO>>> GetCounselingServices(string? name, string? searchQuery, int pageNumber = 1, int pageSize = 10)
         {
-            var counselingEntites = await _counselingInfoRepository.GetCounselingsAsync();
+            if (pageSize > maxCounselingPageSize)
+            {
+                pageSize = maxCounselingPageSize;
+            }
 
+            var (counselingEntites, paginationMetadata) = await _counselingInfoRepository.GetCounselingsAsync(name, searchQuery, pageNumber, pageSize);
+
+            Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(paginationMetadata));
 
             return Ok(_mapper.Map<IEnumerable<CounselingWithoutSpecialEventsDTO>>(counselingEntites));
         }

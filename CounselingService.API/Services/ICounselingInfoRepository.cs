@@ -6,6 +6,8 @@ namespace CounselingService.API.Services
     {
         Task<IEnumerable<Counseling>> GetCounselingsAsync();
 
+        Task<(IEnumerable<Counseling>, PaginationMetadata)> GetCounselingsAsync(string? name, string? searchQuery, int pageNumber, int pageSize);
+
         Task<Counseling?> GetCounselingAsync(int counselingId, bool includeSpecialEvents);
 
         Task<IEnumerable<SpecialEvents>> GetSpecialEventsForCounselingAsync(int counselingId);
