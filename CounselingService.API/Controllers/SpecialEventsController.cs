@@ -13,6 +13,7 @@ namespace CounselingService.API.Controllers
 {
     [Route("api/v{version:apiVersion}/CounselingServices/{counselingId}/SpecialEvents")]
     [Authorize(Policy = "MustBeAGamblingCounselor")]
+    [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [ApiController]
     public class SpecialEventsController : ControllerBase
