@@ -3,18 +3,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CounselingService.API.DbContexts
 {
+
+    /// <summary>
+    /// DB set mapped to our entity classes.
+    /// </summary>
     public class CounselingInfoContext : DbContext
     {
+        /// <summary>
+        /// Dbset Counseling for main entity of counseling
+        /// </summary>
         public DbSet<Counseling> Counselings { get; set; } = null!;
 
+        /// <summary>
+        /// Dbset Special Events for entity of specialevent
+        /// </summary>
         public DbSet<SpecialEvents> SpecialEvents { get; set; } = null!;
 
+
+        /// <summary>
+        /// Default constructor with options parameter
+        /// </summary>
+        /// <param name="options"></param>
         public CounselingInfoContext(DbContextOptions<CounselingInfoContext> options)
             : base(options)
         {
 
         }
 
+
+        /// <summary>
+        /// override of model building with some default items.
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Counseling>().

@@ -24,6 +24,33 @@
             <returns>IActionResult</returns>
             <response code="200">Returns requested Counseling Service</response>
         </member>
+        <member name="T:CounselingService.API.DbContexts.CounselingInfoContext">
+            <summary>
+            DB set mapped to our entity classes.
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.DbContexts.CounselingInfoContext.Counselings">
+            <summary>
+            Dbset Counseling for main entity of counseling
+            </summary>
+        </member>
+        <member name="P:CounselingService.API.DbContexts.CounselingInfoContext.SpecialEvents">
+            <summary>
+            Dbset Special Events for entity of specialevent
+            </summary>
+        </member>
+        <member name="M:CounselingService.API.DbContexts.CounselingInfoContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{CounselingService.API.DbContexts.CounselingInfoContext})">
+            <summary>
+            Default constructor with options parameter
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:CounselingService.API.DbContexts.CounselingInfoContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            override of model building with some default items.
+            </summary>
+            <param name="modelBuilder"></param>
+        </member>
         <member name="T:CounselingService.API.Migrations.CounselingInfoDBInitialMigration">
             <inheritdoc />
         </member>
