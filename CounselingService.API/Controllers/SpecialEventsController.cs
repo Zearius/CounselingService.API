@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace CounselingService.API.Controllers
 {
     [Route("api/v{version:apiVersion}/CounselingServices/{counselingId}/SpecialEvents")]
-    [Authorize(Policy = "MustBeAGamblingCounselor")]
+    //[Authorize(Policy = "MustBeAGamblingCounselor")]
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [ApiController]
@@ -51,7 +51,7 @@ namespace CounselingService.API.Controllers
            return Ok(_mapper.Map<IEnumerable<SpecialEventsDTO>>(specialEventsForCounseling));
         }
 
-        [HttpGet("{specialEventID}", Name = "GetSpecialEvent")]
+        [HttpGet("{specialEventId}", Name = "GetSpecialEvent")]
         public async Task<ActionResult<SpecialEventsDTO>> GetSpecialEvent(int counselingId, int specialEventId)
         {
             if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId))
@@ -96,8 +96,8 @@ namespace CounselingService.API.Controllers
         }
 
         //Full update
-        [HttpPut("{specialEventID}")]
-        public async  Task<ActionResult> UpdateSpecialEvent(int counselingId, int specialEventID, SpecialEventForUpdateDto specialEvent)
+        [HttpPut("{specialEventId}")]
+        public async  Task<ActionResult> UpdateSpecialEvent(int counselingId, int specialEventId, SpecialEventForUpdateDto specialEvent)
         {
             //Look for Counseling to update
             if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId))
@@ -106,7 +106,7 @@ namespace CounselingService.API.Controllers
             }
 
             //Search DB for Special Event
-            var specialEventsEntity = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventID);
+            var specialEventsEntity = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventId);
             if (specialEventsEntity == null) 
             {
                 return NotFound();
@@ -120,8 +120,8 @@ namespace CounselingService.API.Controllers
         }
 
         //Partial Update
-        [HttpPatch("{specialEventID}")]
-        public async Task<ActionResult> PartiallyUpdateSpecialEvent(int counselingId, int specialEventID, JsonPatchDocument<SpecialEventForUpdateDto> patchDocument)
+        [HttpPatch("{specialEventId}")]
+        public async Task<ActionResult> PartiallyUpdateSpecialEvent(int counselingId, int specialEventId, JsonPatchDocument<SpecialEventForUpdateDto> patchDocument)
         {
             //Look for Counseling to update
             if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId))
@@ -130,7 +130,7 @@ namespace CounselingService.API.Controllers
             }
 
             //Search DB for Special Event
-            var specialEventsEntity = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventID);
+            var specialEventsEntity = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventId);
             if (specialEventsEntity == null)
             {
                 return NotFound();
@@ -159,8 +159,8 @@ namespace CounselingService.API.Controllers
         }
 
         //Deletion of Resources
-        [HttpDelete("{specialEventID}")]
-        public async Task<ActionResult> DeleteSpecialEvent(int counselingId, int specialEventID)
+        [HttpDelete("{specialEventId}")]
+        public async Task<ActionResult> DeleteSpecialEvent(int counselingId, int specialEventId)
         {
             //Look for Counseling to update
             if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId))
@@ -169,7 +169,7 @@ namespace CounselingService.API.Controllers
             }
 
             //Search DB for Special Event
-            var specialEventsEntity = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventID);
+            var specialEventsEntity = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId, specialEventId);
             if (specialEventsEntity == null)
             {
                 return NotFound();
