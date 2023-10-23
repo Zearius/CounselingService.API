@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
+import { ICounselingServices } from './ICounselingServices';
 
 @Component({
   selector: 'app-CounselingServices',
-  templateUrl: './CounselingServices.component.html'
+  templateUrl: './CounselingServices.component.html',
+  styleUrls: ['./services-list.component.css']
 })
 export class CounselingServicesComponent {
   pageTitle: string = 'Counseling Services';
-  counselingServices: any[] =
+  counselingServices: ICounselingServices[] =
     [
       {
         "counselingServiceID": 1,
