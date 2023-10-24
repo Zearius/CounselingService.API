@@ -1,7 +1,7 @@
 export interface ICounselingServices {
-  counselingServiceID: number;
-  counselingServiceName: string;
-  counselorName: string;
+  id: number;
+  name: string;
+  counselor: string;
   description: string;
 
 
