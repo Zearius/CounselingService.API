@@ -69,6 +69,15 @@ builder.Services.AddScoped<ICounselingInfoRepository, CounselingInfoRepository>(
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder =>
+        {
+            builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new()
@@ -113,6 +122,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseCors();
 
 app.UseAuthentication();
 

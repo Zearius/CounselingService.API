@@ -11,11 +11,11 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-          <h4>Filtered by: </h4>
+          <h4>Filtered by: {{listFilter}} </h4>
       </div>
     </div>
     <div class="table-responsive">
-      <table class="table" *ngIf="counselingServices.length">
+      <table class="table" *ngIf="counselings.length">
         <thead>
           <tr>
             <th>
@@ -30,11 +30,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let service of counselingServices">
+          <tr *ngFor="let service of filteredCounselingServices">
             <td></td>
-            <td>{{service.counselingServiceID}}</td>
-            <td>{{service.counselingServiceName}}</td>
-            <td>{{service.counselorName}}</td>
+            <td>{{service.id}}</td>
+            <td>{{service.name}}</td>
+            <td>{{service.counselor}}</td>
             <td>{{service.description}}</td>
           </tr>
         </tbody>
