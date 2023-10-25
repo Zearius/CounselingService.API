@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { CounselingServicesComponent } from './CounselingServices/CounselingServices.component'
+import { SpecialEventsComponent } from './CounselingServices/special-events.component';
 
 @NgModule({
   declarations: [
@@ -18,16 +19,20 @@ import { CounselingServicesComponent } from './CounselingServices/CounselingServ
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    CounselingServicesComponent
+    CounselingServicesComponent,
+    SpecialEventsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'CounselingServices', component: CounselingServicesComponent },
+      { path: 'special-events', component: SpecialEventsComponent },
+      { path: 'special-events/:id', component: SpecialEventsComponent },
+      { path: 'home', component: HomeComponent },
+      { path: '', redirectTo: 'CounselingServices', pathMatch: 'full' },
+      { path: '**', redirectTo: 'CounselingServices', pathMatch: 'full' },
     ])
   ],
   providers: [],
