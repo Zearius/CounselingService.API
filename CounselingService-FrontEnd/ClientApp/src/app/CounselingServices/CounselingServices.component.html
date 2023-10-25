@@ -18,11 +18,6 @@
       <table class="table" *ngIf="counselings.length">
         <thead>
           <tr>
-            <th>
-              <button class="btn btn-primary">
-                Show Class Icon
-              </button>
-            </th>
             <th>ProgramID</th>
             <th>Program Name</th>
             <th>Counselor</th>
@@ -31,7 +26,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let service of filteredCounselingServices">
-            <td></td>
             <td>{{service.id}}</td>
             <td>{{service.name}}</td>
             <td>{{service.counselor}}</td>

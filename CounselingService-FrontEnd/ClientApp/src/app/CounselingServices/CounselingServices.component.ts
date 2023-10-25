@@ -5,7 +5,6 @@ import { OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-CounselingServices',
   templateUrl: './CounselingServices.component.html',
   styleUrls: ['./services-list.component.css']
 })

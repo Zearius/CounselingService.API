@@ -2,9 +2,21 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  template: '<div><h1>Better Health Solutions</h1><app-CounselingServices></app-CounselingServices></div>'
- // templateUrl: './app.component.html'
+  template: `
+  <nav class='navbar navbar-expand navbar-light bg-light'>
+    <a class='navbar-brand'>{{pageTitle}}</a>
+    <ul class='nav nav-pills'>
+      <li><a class='nav-link' routerLink='/CounselingServices'>Home</a></li>
+      <li><a class='nav-link' routerLink='/special-events'>Special Events</a></li>
+    </ul>
+  </nav>
+   <div class='container'>
+    <router-outlet></router-outlet>
+  </div>
+  `
+
 })
 export class AppComponent {
-  title = 'app';
+
+  pageTitle: string = 'Better Health Solutions';
 }
