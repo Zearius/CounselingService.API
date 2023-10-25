@@ -17,18 +17,19 @@ export class CounselingServicesComponent implements OnInit, OnDestroy {
   sub!: Subscription;
 
   private _listFilter: string = '';
-  get listFIlter(): string {
+  get listFilter(): string {
     return this._listFilter;
   }
   set listFilter(value: string) {
     this._listFilter = value;
+    console.log('In setter:', value);
     this.filteredCounselingServices = this.performFilter(value);
   }
 
   performFilter(filterby: string): ICounselingServices[] {
     filterby = filterby.toLocaleLowerCase();
-    return this.counselings.filter((counselingServices: ICounselingServices) =>
-      counselingServices.name.toLocaleLowerCase().includes(this.listFilter));
+    return this.counselings.filter((counseling: ICounselingServices) =>
+      counseling.name.toLocaleLowerCase().includes(this.listFilter));
   }
 
 
@@ -36,7 +37,7 @@ export class CounselingServicesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.sub = this.counselingService.getCounselings().subscribe(
-      {
+ {
         next: counselings => {
           this.counselings = counselings;
           this.filteredCounselingServices = this.counselings;
