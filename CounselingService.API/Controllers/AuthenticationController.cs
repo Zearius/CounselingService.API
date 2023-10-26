@@ -84,7 +84,7 @@ namespace CounselingService.API.Controllers
 
         private CounselingInfoUser ValidateUserCredentials(string? userName, string? password)
         {
-            return new CounselingInfoUser(1, userName ?? "", "John","Doe","gambling");
+            return new CounselingInfoUser(1, userName ?? "", "John","Doe", "gambling");
         }
     }
 }

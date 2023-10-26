@@ -97,7 +97,7 @@ builder.Services.AddAuthorization(options =>
         options.AddPolicy("MustBeAGamblingCounselor", policy =>
         {
             policy.RequireAuthenticatedUser();
-            policy.RequireClaim("counseling", "gambling");
+            policy.RequireClaim("counseling", "gambling", "narcotics", "alcohol", "Test");
 
         });
     }

@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace CounselingService.API.Controllers
 {
     [Route("api/v{version:apiVersion}/CounselingServices/{counselingId}/SpecialEvents")]
-    //[Authorize(Policy = "MustBeAGamblingCounselor")]
+   // [Authorize(Policy = "MustBeAGamblingCounselor")]
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [ApiController]
@@ -34,18 +34,18 @@ namespace CounselingService.API.Controllers
         [HttpGet]
         public async  Task<ActionResult<IEnumerable<SpecialEventsDTO>>> GetSpecialEvents(int counselingId) 
         {
-            var counselingName = User.Claims.FirstOrDefault(c => c.Type == "counseling")?.Value;
+            //var counselingName = User.Claims.FirstOrDefault(c => c.Type == "counseling")?.Value;
 
-            if (!await _counselingInfoRepository.CounselingNameMatchesCounselingId(counselingName, counselingId))
-            {
-                return Forbid();
-            };
+            //if (!await _counselingInfoRepository.CounselingNameMatchesCounselingId(counselingName, counselingId))
+            //{
+            //    return Forbid();
+            //};
 
-            if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId)) 
-            {
-                _logger.LogInformation($"Counseling with id {counselingId} was not found.");
-                return NotFound();
-            }
+            //if (!await _counselingInfoRepository.CounselingExistsAsync(counselingId)) 
+            //{
+            //    _logger.LogInformation($"Counseling with id {counselingId} was not found.");
+            //    return NotFound();
+            //}
 
            var specialEventsForCounseling = await _counselingInfoRepository.GetSpecialEventsForCounselingAsync(counselingId);
            return Ok(_mapper.Map<IEnumerable<SpecialEventsDTO>>(specialEventsForCounseling));
