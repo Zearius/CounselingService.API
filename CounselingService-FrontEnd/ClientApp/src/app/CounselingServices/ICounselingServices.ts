@@ -3,6 +3,4 @@ export interface ICounselingServices {
   name: string;
   counselor: string;
   description: string;
-
-
 }

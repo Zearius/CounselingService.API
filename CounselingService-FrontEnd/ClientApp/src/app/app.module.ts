@@ -28,8 +28,9 @@ import { SpecialEventsComponent } from './CounselingServices/special-events.comp
     FormsModule,
     RouterModule.forRoot([
       { path: 'CounselingServices', component: CounselingServicesComponent },
-      { path: 'special-events', component: SpecialEventsComponent },
-      { path: 'special-events/:id', component: SpecialEventsComponent },
+      { path: 'CounselingServices/:id', component: SpecialEventsComponent },
+      { path: 'SpecialEvents', component: SpecialEventsComponent },
+      { path: 'SpecialEvents/:id', component: SpecialEventsComponent },
       { path: 'home', component: HomeComponent },
       { path: '', redirectTo: 'CounselingServices', pathMatch: 'full' },
       { path: '**', redirectTo: 'CounselingServices', pathMatch: 'full' },

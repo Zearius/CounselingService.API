@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 export class CounselingServicesComponent implements OnInit, OnDestroy {
   pageTitle: string = 'Counseling Services';
   filteredCounselingServices: ICounselingServices[] = [];
-  counselings: ICounselingServices[] = [];
+  counseling: ICounselingServices[] = [];
   errorMessage: string = '';
   sub!: Subscription;
 
@@ -27,7 +27,7 @@ export class CounselingServicesComponent implements OnInit, OnDestroy {
 
   performFilter(filterby: string): ICounselingServices[] {
     filterby = filterby.toLocaleLowerCase();
-    return this.counselings.filter((counseling: ICounselingServices) =>
+    return this.counseling.filter((counseling: ICounselingServices) =>
       counseling.name.toLocaleLowerCase().includes(this.listFilter));
   }
 
@@ -37,9 +37,9 @@ export class CounselingServicesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.sub = this.counselingService.getCounselings().subscribe(
  {
-        next: counselings => {
-          this.counselings = counselings;
-          this.filteredCounselingServices = this.counselings;
+        next: counseling => {
+      this.counseling = counseling;
+      this.filteredCounselingServices = this.counseling;
         },
         error: err => this.errorMessage = err
       });
